@@ -28,9 +28,9 @@ logging.basicConfig(filename='app.log',
 
 
 print()
-ise_host = "10.122.176.10"
-ise_user = "apiadmin"
-ise_passwd = "Ise1234!"
+ise_host = input("ISE PAN IP: ")
+ise_user = input("ERS User: ")
+ise_passwd = getpass("Password: ")
 HEADERS = {
         'Accept': "application/json",
         'Content-Type': "application/json",
