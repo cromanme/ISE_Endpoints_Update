@@ -28,9 +28,9 @@ logging.basicConfig(filename='app.log',
 
 
 print()
-ise_host = "10.122.176.10"
-ise_user = "admin"
-ise_passwd = "Ise1234!"
+ise_host = input("ISE PAN IP: ")
+ise_user = input("ERS User: ")
+ise_passwd = getpass("Password: ")
 option = input("Type 1 to remove association\nType 2 to restore association\nOption: ")
 
 if option == "1" or option == "2":
