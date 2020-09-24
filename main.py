@@ -28,9 +28,17 @@ logging.basicConfig(filename='app.log',
 
 
 print()
-ise_host = input("ISE PAN IP: ")
-ise_user = input("ERS User: ")
-ise_passwd = getpass("Password: ")
+ise_host = "10.122.176.10"
+ise_user = "admin"
+ise_passwd = "Ise1234!"
+option = input("Type 1 to remove association\nType 2 to restore association\nOption: ")
+
+if option == "1" or option == "2":
+    print()
+else:
+    sys.exit(f"Invalid input detected. Terminating Script")
+
+
 HEADERS = {
         'Accept': "application/json",
         'Content-Type': "application/json",
@@ -57,15 +65,26 @@ for row in data:
         url = uri + "endpointgroup/name/" + group
         group_id =  tools.get_groupendpoint_id(url,ise_user,ise_passwd,HEADERS)
         if group_id:
-            if group_id == endpoint_group_id:
-                payload = "{\n    \"ERSEndPoint\": {\n        \"staticGroupAssignment\": false\n    }\n}"
-                url = uri + "endpoint/" + endpoint_id
-                if tools._put(url,ise_user,ise_passwd,HEADERS,payload) == 200:
-                    print("Succcesfully updated MAC Address: ",mac)
+            if option == "1":
+                if group_id == endpoint_group_id:
+                    payload = "{\n    \"ERSEndPoint\": {\n        \"staticGroupAssignment\": false\n    }\n}"
+                    url = uri + "endpoint/" + endpoint_id
+                    if tools._put(url,ise_user,ise_passwd,HEADERS,payload) == 200:
+                        print("Succcesfully updated MAC Address: ",mac)
+                    else:
+                        print("Error updating MAC Address: ",mac)
                 else:
-                    print("Error updating MAC Address: ",mac)
-            else:
-                print("MAC Address: ",mac + " is not part of Group: ",group)
+                    print("MAC Address: ",mac + " is not part of Group: ",group)
+            elif option == "2":
+                if group_id != endpoint_group_id:
+                    payload = "{\n    \"ERSEndPoint\": {\n        \"staticGroupAssignment\": true,\n        \"groupId\": \""+group_id+"\"\n    }\n}"
+                    url = uri + "endpoint/" + endpoint_id
+                    if tools._put(url,ise_user,ise_passwd,HEADERS,payload) == 200:
+                        print("Succcesfully updated MAC Address: ",mac)
+                    else:
+                        print("Error updating MAC Address: ",mac)
+                else:
+                    print("MAC Address: ",mac + " is already part of Group: ",group)        
         else:
             print("Endpoint Identity Group:",group + " Not Found!!!")
     else:
